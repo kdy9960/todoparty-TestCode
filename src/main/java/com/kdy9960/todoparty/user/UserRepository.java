@@ -1,4 +1,4 @@
-package com.kdy9960.todoparty;
+package com.kdy9960.todoparty.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

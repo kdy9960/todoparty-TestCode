@@ -1,5 +1,6 @@
-package com.kdy9960.todoparty;
+package com.kdy9960.todoparty.user;
 
+import com.kdy9960.todoparty.CommonResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
