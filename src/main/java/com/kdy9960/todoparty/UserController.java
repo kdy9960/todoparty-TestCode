@@ -2,6 +2,7 @@ package com.kdy9960.todoparty;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +17,14 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@Valid @RequestBody UserRequestDto userRequestDto) {
-        userService.signup(userRequestDto);
+        try {
+            userService.signup(userRequestDto);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(new CommonResponseDto("중복된 username 입니다.", HttpStatus.BAD_REQUEST.value()));
+        }
 
-        return ResponseEntity.status(201).body(new CommonResponseDto("회원가입 성공", 201));
+
+        return ResponseEntity.status(HttpStatus.CREATED.value())
+                .body(new CommonResponseDto("회원가입 성공", HttpStatus.CREATED.value()));
     }
 }
