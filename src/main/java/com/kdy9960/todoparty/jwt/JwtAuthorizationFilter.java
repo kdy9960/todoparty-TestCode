@@ -2,7 +2,7 @@ package com.kdy9960.todoparty.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kdy9960.todoparty.CommonResponseDto;
-import com.kdy9960.todoparty.user.UserService;
+import com.kdy9960.todoparty.user.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.filter.OncePerRequestFilter; // 이거는 요청이 한번 올때마다 Filter를 태우겠다는 어노테이션
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -25,7 +25,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    private final UserService userService;
+    private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -41,7 +41,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // username -> user 조회 -> userDetails 에 담고 -> authentication의 principal에 담고 (UsernamePasswordAuthenticationToken)
                 String username = info.getSubject();
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
-                UserDetails userDetails = userService.getUserDetails(username);
+                UserDetails userDetails = userDetailsService.getUserDetails(username);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null);
 
                 // -> securityContext 에 담고
