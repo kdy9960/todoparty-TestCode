@@ -1,5 +1,10 @@
 package com.kdy9960.todoparty.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kdy9960.todoparty.jwt.JwtAuthorizationFilter;
+import com.kdy9960.todoparty.jwt.JwtUtil;
+import com.kdy9960.todoparty.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +18,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration // Bean을 주입해서 사용할것이기 때문에 @Configuration 주입
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
+    private final ObjectMapper objectMapper;
+
+    @Bean
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(jwtUtil, userService, objectMapper);
+    }
 
     @Bean // UserService에서 사용되는 passwordEncoder는 기본설정으로 사용할수있지만 BCryptPasswordEncoder형식으로 사용하기위해서 Bean으로 작성
     PasswordEncoder passwordEncoder() {
