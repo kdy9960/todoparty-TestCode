@@ -1,8 +1,11 @@
 package com.kdy9960.todoparty.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 @Service // 서비스로 운용할것이이기 @Service 어노테이션 주입
 @RequiredArgsConstructor // 생성자가 없기때문에 주입해달라고 요청하는 어노테이션
@@ -24,4 +27,23 @@ public class UserService {
         userRepository.save(user);
 
     }
+
+    public UserDetails getUserDetails(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Not Found" + username));
+        return new UserDetailsImpl(user);
+    }
+
+    public void login(UserRequestDto userRequestDto) {
+        String username = userRequestDto.getUsername();
+        String password = userRequestDto.getPassword();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new IllegalArgumentException("등록된 유저가 없습니다."));
+
+        if(!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
 }
