@@ -21,18 +21,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration // Bean을 주입해서 사용할것이기 때문에 @Configuration 주입
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final JwtUtil jwtUtil;
-    private final UserDetailsService userDetailsService;
-    private final ObjectMapper objectMapper;
 
-    @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, objectMapper);
-    }
+    private final JwtUtil jwtUtil;
+
+    private final UserDetailsService userDetailsService;
+
+    private final ObjectMapper objectMapper;
 
     @Bean // UserService에서 사용되는 passwordEncoder는 기본설정으로 사용할수있지만 BCryptPasswordEncoder형식으로 사용하기위해서 Bean으로 작성
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
+    public JwtAuthorizationFilter jwtAuthorizationFilter() {
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, objectMapper);
     }
 
     @Bean // 기존의 WebSecurityConfig설정을 컨트롤 할수있도록 추가한 Bean
